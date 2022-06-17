@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .serializers import InvestigationDataSerializer, InvestigationSerializer
 from .models import Investigation, InvestigationData
+import tabula as tab
 
 
 @api_view(['GET'])
@@ -11,7 +12,8 @@ def apiOverview(request):
         'Get All Investigations': '/get_investigations',
         'Get Investigation by ID': '/get_investigation/<int:id>',
         'Create Investigation': '/create_investigation',
-        'Get All Investigation Data': '/get_investigation_data/<int:id>'
+        'Get All Investigation Data': '/get_investigation_data/<int:investigationId>',
+        'Get All Investigation Data By Call Type': '/get_investigation_data_by_call_type/<int:call_type>',
     }
 
     return Response(api_urls)
@@ -33,6 +35,8 @@ def GetInvestigation(request, pk):
 
 @api_view(['POST'])
 def CreateInvestigation(request):
+    pdf = tab.read_pdf(request.data['pdf'].file, pages='all')
+    print(pdf)
     serializer = InvestigationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -42,9 +46,10 @@ def CreateInvestigation(request):
 @api_view(['GET'])
 def GetInvestigationData(request, investigationId):
     investigationData = InvestigationData.objects.filter(
-        investigation_id=investigationId)
+        investigation_id=1)
     serializer = InvestigationDataSerializer(investigationData, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def GetInvestigationDataByCallType(request, call_type):
