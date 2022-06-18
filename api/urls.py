@@ -9,9 +9,12 @@ urlpatterns = [
          views.GetInvestigation, name='investigation.single'),
     path('create_investigation',
          views.CreateInvestigation, name='investigation.create'),
+    path('delete_investigation/<int:investigationId>',
+         views.DeleteInvestigation, name='investigation.delete'),
+
 
     path('get_investigation_data/<int:investigationId>',
          views.GetInvestigationData, name='investigationData.all'),
-    path('get_investigation_data_by_call_type/<int:call_type>',
-         views.GetInvestigationDataByCallType, name='investigationData.all'),
+    path('get_investigation_additional/<int:call_type>/<int:investigationId>',
+         views.GetInvestigation_AdditionalDetails, name='investigationData.all'),
 ]

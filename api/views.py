@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.db.models import Count, Sum
 from .serializers import InvestigationDataSerializer, InvestigationSerializer
 from .models import Investigation, InvestigationData
 import tabula as tab
@@ -10,10 +11,12 @@ import tabula as tab
 def apiOverview(request):
     api_urls = {
         'Get All Investigations': '/get_investigations',
-        'Get Investigation by ID': '/get_investigation/<int:id>',
+        'Get Investigation by ID': '/get_investigation/{id}',
         'Create Investigation': '/create_investigation',
-        'Get All Investigation Data': '/get_investigation_data/<int:investigationId>',
-        'Get All Investigation Data By Call Type': '/get_investigation_data_by_call_type/<int:call_type>',
+        'Delete Investigation': '/delete_investigation/{id}',
+
+        'Get Investigation Data': '/get_investigation_data/{id}',
+        'Get Investigation Additional Data': '/get_investigation_additional/{call_id}/{investigation_id}',
     }
 
     return Response(api_urls)
@@ -44,16 +47,59 @@ def CreateInvestigation(request):
 
 
 @api_view(['GET'])
-def GetInvestigationData(request, investigationId):
-    investigationData = InvestigationData.objects.filter(
-        investigation_id=1)
-    serializer = InvestigationDataSerializer(investigationData, many=True)
-    return Response(serializer.data)
+def DeleteInvestigation(request, investigationId):
+    investigation = Investigation.objects.get(id=investigationId)
+    investigation.delete()
+    return Response("Investigation deleted successfully!")
 
 
 @api_view(['GET'])
-def GetInvestigationDataByCallType(request, call_type):
+def GetInvestigationData(request, investigationId):
+    investigationDetails = Investigation.objects.get(id=investigationId)
+    investigationDetails_Serializer = InvestigationSerializer(
+        investigationDetails, many=False)
+
+    outgoing = GetInvestigationDataSubFunc_ob_count(0, investigationId)
+    incoming = GetInvestigationDataSubFunc_ob_count(1, investigationId)
+
+    return Response({
+        "investigation": investigationDetails_Serializer.data,
+        "trackingNo": "077777777",
+        "imei": "11111",
+        "imsi": "00000",
+        "outgoing": outgoing,
+        "incoming": incoming
+    })
+
+
+@api_view(['GET'])
+def GetInvestigation_AdditionalDetails(request, call_type, investigationId):
+    attempts = GetInvestigationDataSubFunc_ob_count(call_type, investigationId)
+    duration = GetInvestigationDataSubFunc_ob_duration(
+        call_type, investigationId)
+    date_time = GetInvestigationDataSubFunc_ob_date(call_type, investigationId)
+
+    return Response({
+        "attempts": attempts,
+        "duration": duration,
+        "date_time": date_time
+    })
+
+
+def GetInvestigationDataSubFunc_ob_count(call_type, investigation_id):
+    investigationData = InvestigationData.objects.filter(call_type=call_type, investigation_id=investigation_id).values(
+        'receiver').annotate(count=Count('receiver')).annotate(duration=Sum('duration')).order_by('-count')
+    return investigationData
+
+
+def GetInvestigationDataSubFunc_ob_duration(call_type, investigation_id):
+    investigationData = InvestigationData.objects.filter(call_type=call_type, investigation_id=investigation_id).values(
+        'receiver').annotate(count=Count('receiver')).annotate(duration=Sum('duration')).order_by('-duration')
+    return investigationData
+
+
+def GetInvestigationDataSubFunc_ob_date(call_type, investigation_id):
     investigationData = InvestigationData.objects.filter(
-        call_type=call_type)
+        call_type=call_type, investigation_id=investigation_id).order_by('created_at').reverse()
     serializer = InvestigationDataSerializer(investigationData, many=True)
-    return Response(serializer.data)
+    return serializer.data
