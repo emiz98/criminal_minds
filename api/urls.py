@@ -13,5 +13,5 @@ urlpatterns = [
     path('get_investigation_data/<int:investigationId>',
          views.GetInvestigationData, name='investigationData.all'),
     path('get_investigation_data_by_call_type/<int:call_type>',
-         views.GetInvestigationDataByCallType, name='investigationData.all')
+         views.GetInvestigationDataByCallType, name='investigationData.all'),
 ]
