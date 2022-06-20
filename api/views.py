@@ -121,14 +121,14 @@ def CreateInvestigation(request):
     # elif int(request.data['network']) == 3:
     # df = data_pipeline(pdf)
     # for index, row in df.iterrows():
-    #     data_row = InvestigationData(
-    #         investigation=investigation,
-    #         caller=row["caller"],
-    #         receiver=row["receiver"], call_type=row["call_type"],
-    #         duration=0 if row["duration"] else row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-    #             row["date_time"], '%m/%d/%Y %H:%M:%S')
-    #     )
-    #     data_row.save()
+    # data_row = InvestigationData(
+    #     investigation=investigation,
+    #     caller=row["caller"],
+    #     receiver=row["receiver"], call_type=row["call_type"],
+    #     duration=0 if row["duration"] else row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
+    #         row["date_time"], '%m/%d/%Y %H:%M:%S')
+    # )
+    # data_row.save()
 
     return Response("investigation_raw")
 
