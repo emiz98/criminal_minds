@@ -1,0 +1,1 @@
+web: gunicorn criminal_minds.wsgi
