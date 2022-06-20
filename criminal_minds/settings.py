@@ -29,7 +29,8 @@ STATICFILES_DIRS = (
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j$g%*-srop3m1tdi!e(zyvprd+hhl^k8xhct2060wxw!!+tj51'
+# SECRET_KEY = 'django-insecure-j$g%*-srop3m1tdi!e(zyvprd+hhl^k8xhct2060wxw!!+tj51'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if(len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
@@ -37,7 +38,7 @@ if(len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ['']
+ALLOWED_HOSTS = ['criminalminds.herokuapp.com']
 
 
 # Application definition
@@ -149,7 +150,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+# STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
