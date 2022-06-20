@@ -77,6 +77,9 @@ def CreateInvestigation(request):
     serializer = InvestigationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+    # investigation_raw = Investigation(
+    #     name=request.data['name'], network=request.data['network'])
+    # investigation_raw.save()
 
     investigation = GetInvestigationSub(serializer.data['id'])
     if int(request.data['network']) == 0:
