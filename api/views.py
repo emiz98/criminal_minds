@@ -78,51 +78,51 @@ def CreateInvestigation(request):
     if serializer.is_valid():
         serializer.save()
 
-    investigation = GetInvestigationSub(serializer.data['id'])
-    if int(request.data['network']) == 0:
-        df = data_pipeline4(pdf)
-        for index, row in df.iterrows():
-            data_row = InvestigationData(
-                investigation=investigation,
-                caller=row["caller"],
-                receiver=row["receiver"], call_type=row["call_type"],
-                duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-                    row["date_time"], '%m/%d/%Y %H:%M:%S')
-            )
-            data_row.save()
-    elif int(request.data['network']) == 1:
-        df = data_pipeline2(pdf)
-        for index, row in df.iterrows():
-            data_row = InvestigationData(
-                investigation=investigation,
-                caller=row["caller"],
-                receiver=row["receiver"], call_type=row["call_type"],
-                duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-                    date_convert(row["date_time"]), '%m/%d/%Y %H:%M:%S')
-            )
-            data_row.save()
-    elif int(request.data['network']) == 2:
-        df = data_pipeline3(pdf)
-        for index, row in df.iterrows():
-            data_row = InvestigationData(
-                investigation=investigation,
-                caller=row["caller"],
-                receiver=row["receiver"], call_type=row["call_type"],
-                duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-                    row["date_time"], '%m/%d/%Y %H:%M:%S')
-            )
-            data_row.save()
-    elif int(request.data['network']) == 3:
-        df = data_pipeline(pdf)
-        for index, row in df.iterrows():
-            data_row = InvestigationData(
-                investigation=investigation,
-                caller=row["caller"],
-                receiver=row["receiver"], call_type=row["call_type"],
-                duration=0 if row["duration"] else row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-                    row["date_time"], '%m/%d/%Y %H:%M:%S')
-            )
-            data_row.save()
+    # investigation = GetInvestigationSub(serializer.data['id'])
+    # if int(request.data['network']) == 0:
+    #     df = data_pipeline4(pdf)
+    #     for index, row in df.iterrows():
+    #         data_row = InvestigationData(
+    #             investigation=investigation,
+    #             caller=row["caller"],
+    #             receiver=row["receiver"], call_type=row["call_type"],
+    #             duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
+    #                 row["date_time"], '%m/%d/%Y %H:%M:%S')
+    #         )
+    #         data_row.save()
+    # elif int(request.data['network']) == 1:
+    #     df = data_pipeline2(pdf)
+    #     for index, row in df.iterrows():
+    #         data_row = InvestigationData(
+    #             investigation=investigation,
+    #             caller=row["caller"],
+    #             receiver=row["receiver"], call_type=row["call_type"],
+    #             duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
+    #                 date_convert(row["date_time"]), '%m/%d/%Y %H:%M:%S')
+    #         )
+    #         data_row.save()
+    # elif int(request.data['network']) == 2:
+    #     df = data_pipeline3(pdf)
+    #     for index, row in df.iterrows():
+    #         data_row = InvestigationData(
+    #             investigation=investigation,
+    #             caller=row["caller"],
+    #             receiver=row["receiver"], call_type=row["call_type"],
+    #             duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
+    #                 row["date_time"], '%m/%d/%Y %H:%M:%S')
+    #         )
+    #         data_row.save()
+    # elif int(request.data['network']) == 3:
+        # df = data_pipeline(pdf)
+        # for index, row in df.iterrows():
+        #     data_row = InvestigationData(
+        #         investigation=investigation,
+        #         caller=row["caller"],
+        #         receiver=row["receiver"], call_type=row["call_type"],
+        #         duration=0 if row["duration"] else row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
+        #             row["date_time"], '%m/%d/%Y %H:%M:%S')
+        #     )
+        #     data_row.save()
 
     return Response(serializer.data)
 
