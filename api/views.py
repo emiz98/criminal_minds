@@ -72,8 +72,10 @@ def GetInvestigation(request, pk):
 
 
 @api_view(['POST'])
-async def CreateInvestigation(request):
-    pdf = await tab.read_pdf(request.data['pdf'].file, pages='all')
+def CreateInvestigation(request):
+    pdf = tab.read_pdf(
+        "https://github.com/tabulapdf/tabula-java/raw/master/src/test/resources/technology/tabula/arabic.pdf", pages='all')
+    # pdf = tab.read_pdf(request.data['pdf'].file, pages='all')
     print(pdf)
     # serializer = InvestigationSerializer(data=request.data)
     # if serializer.is_valid():
