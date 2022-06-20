@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.apiOverview, name='apiOverview'),
+    path('user/', views.UserRecordView.as_view(), name='users'),
     path('get_investigations', views.GetAllInvestigations,
          name='investigation.all'),
     path('get_investigation/<int:pk>',
