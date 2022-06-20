@@ -127,7 +127,7 @@ def CreateInvestigation(request):
     #     )
     #     data_row.save()
 
-    return Response(investigation_raw)
+    return Response("investigation_raw")
 
 
 @api_view(['GET'])
