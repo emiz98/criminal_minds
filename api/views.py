@@ -74,6 +74,7 @@ def GetInvestigation(request, pk):
 @api_view(['POST'])
 async def CreateInvestigation(request):
     pdf = await tab.read_pdf(request.data['pdf'].file, pages='all')
+    print(pdf)
     # serializer = InvestigationSerializer(data=request.data)
     # if serializer.is_valid():
     #     serializer.save()
