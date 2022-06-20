@@ -77,8 +77,9 @@ def CreateInvestigation(request):
     # serializer = InvestigationSerializer(data=request.data)
     # if serializer.is_valid():
     #     serializer.save()
-    invest = Investigation(name="asda", network="1")
-    invest.save()
+    investigation = Investigation(
+        name=request.data['name'], network=request.data['network'])
+    investigation.save()
 
     # investigation = GetInvestigationSub(serializer.data['id'])
     # if int(request.data['network']) == 0:
