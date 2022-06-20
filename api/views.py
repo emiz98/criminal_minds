@@ -73,10 +73,12 @@ def GetInvestigation(request, pk):
 
 @api_view(['POST'])
 def CreateInvestigation(request):
-    pdf = tab.read_pdf(request.data['pdf'].file, pages='all')
-    serializer = InvestigationSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
+    # pdf = tab.read_pdf(request.data['pdf'].file, pages='all')
+    # serializer = InvestigationSerializer(data=request.data)
+    # if serializer.is_valid():
+    #     serializer.save()
+    invest = Investigation(name="asda", network="1")
+    invest.save()
 
     # investigation = GetInvestigationSub(serializer.data['id'])
     # if int(request.data['network']) == 0:
@@ -113,18 +115,18 @@ def CreateInvestigation(request):
     #         )
     #         data_row.save()
     # elif int(request.data['network']) == 3:
-        # df = data_pipeline(pdf)
-        # for index, row in df.iterrows():
-        #     data_row = InvestigationData(
-        #         investigation=investigation,
-        #         caller=row["caller"],
-        #         receiver=row["receiver"], call_type=row["call_type"],
-        #         duration=0 if row["duration"] else row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-        #             row["date_time"], '%m/%d/%Y %H:%M:%S')
-        #     )
-        #     data_row.save()
+    # df = data_pipeline(pdf)
+    # for index, row in df.iterrows():
+    #     data_row = InvestigationData(
+    #         investigation=investigation,
+    #         caller=row["caller"],
+    #         receiver=row["receiver"], call_type=row["call_type"],
+    #         duration=0 if row["duration"] else row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
+    #             row["date_time"], '%m/%d/%Y %H:%M:%S')
+    #     )
+    #     data_row.save()
 
-    return Response(serializer.data)
+    return Response("serializer.data")
 
 
 @api_view(['GET'])
