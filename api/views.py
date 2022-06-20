@@ -73,13 +73,13 @@ def GetInvestigation(request, pk):
 
 @api_view(['POST'])
 def CreateInvestigation(request):
-    # pdf = tab.read_pdf(request.data['pdf'].file, pages='all')
+    pdf = tab.read_pdf(request.data['pdf'].file, pages='all')
     # serializer = InvestigationSerializer(data=request.data)
     # if serializer.is_valid():
     #     serializer.save()
-    investigation = Investigation(
+    investigation_raw = Investigation(
         name=request.data['name'], network=request.data['network'])
-    investigation.save()
+    investigation_raw.save()
 
     # investigation = GetInvestigationSub(serializer.data['id'])
     # if int(request.data['network']) == 0:
@@ -127,7 +127,7 @@ def CreateInvestigation(request):
     #     )
     #     data_row.save()
 
-    return Response("serializer.data")
+    return Response(investigation_raw)
 
 
 @api_view(['GET'])
