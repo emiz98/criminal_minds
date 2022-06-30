@@ -8,8 +8,6 @@ Criminal Minds is an mobile application that helps local police to carry out inv
 
 #### Run App Locally
 
-<br/>
-
 ##### Migrate
 
 ```bash
