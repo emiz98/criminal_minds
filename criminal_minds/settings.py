@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 import os
 from pathlib import Path
 import sys
-import django_heroku
+# import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,16 +30,16 @@ STATICFILES_DIRS = (
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-j$g%*-srop3m1tdi!e(zyvprd+hhl^k8xhct2060wxw!!+tj51'
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'django-insecure-j$g%*-srop3m1tdi!e(zyvprd+hhl^k8xhct2060wxw!!+tj51'
+# SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if(len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
+if (len(sys.argv) >= 2 and sys.argv[1] == 'runserver'):
     DEBUG = True
 else:
     DEBUG = False
 
-ALLOWED_HOSTS = ['criminalminds.herokuapp.com']
+ALLOWED_HOSTS = ['criminalminds.herokuapp.com', '192.168.1.32']
 
 
 # Application definition
@@ -99,6 +99,18 @@ WSGI_APPLICATION = 'criminal_minds.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
+# MONGO
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'criminal_minds',
+        # 'CLIENT': {
+        #    'host': 'your-db-host',
+        # }
+    }
+}
+
+# LOCALHOST
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
@@ -110,12 +122,12 @@ WSGI_APPLICATION = 'criminal_minds.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-}
+# DATABASES = {
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.sqlite3',
+#     #     'NAME': BASE_DIR / 'db.sqlite3',
+#     # }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -158,4 +170,4 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())

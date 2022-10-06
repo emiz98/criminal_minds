@@ -31,7 +31,7 @@ def data_pipeline2(pdf):
     combined = pd.concat((converted, dropped), axis=1)
     combined = combined.drop(["call_type", "ORIGIN"], axis=1)
     result = combined.rename(columns={"TERMI": "call_type"})
-    return(result)
+    return (result)
 
 
 # For Airtel 416 pdf
@@ -51,7 +51,7 @@ def data_pipeline3(pdf):
     combined = pd.concat((converted, merged), axis=1)
     combined = combined.drop(["call_type"], axis=1)
     result = combined.rename(columns={"Incoming Call-MTC": "call_type"})
-    return(result)
+    return (result)
 
 
 # For Mobitel 435 pdf
@@ -66,7 +66,7 @@ def data_pipeline4(pdf):
     combined = pd.concat((converted, merged), axis=1)
     combined = combined.drop(["call_type", "Incoming"], axis=1)
     result = combined.rename(columns={"Outgoing": "call_type"})
-    return(result)
+    return (result)
 
 
 def date_convert(date):
