@@ -7,6 +7,13 @@ Criminal Minds is an mobile application that helps local police to carry out inv
 <br/>
 
 #### Run App Locally
+<br/>
+
+##### Make Migration
+
+```bash
+python manage.py makemigrations
+```
 
 ##### Migrate
 
@@ -14,10 +21,16 @@ Criminal Minds is an mobile application that helps local police to carry out inv
 python manage.py migrate
 ```
 
-##### Run Server
+##### Run Server (Local)
 
 ```bash
 python manage.py runserver
+```
+
+##### Run Server (Port)
+
+```bash
+python manage.py runserver xxx.xxx.x.xx:PORT
 ```
 
 ##### Create a super user

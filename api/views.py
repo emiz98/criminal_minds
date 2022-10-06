@@ -1,12 +1,16 @@
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAdminUser
 from django.db.models import Count, Sum
 from datetime import datetime
 
 from api.data_extraction import data_pipeline3, data_pipeline, data_pipeline2, data_pipeline4, date_convert
+from api.extraction.hutch import hutch_pipeline
+from api.extraction.mobitel import mobitel_pipeline
+from api.extraction.airtel import airtel_pipeline
 from .serializers import InvestigationDataSerializer, InvestigationSerializer, UserSerializer
 from .models import Investigation, InvestigationData
 import tabula as tab
@@ -73,61 +77,85 @@ def GetInvestigation(request, pk):
 
 @api_view(['POST'])
 def CreateInvestigation(request):
-    pdf = tab.read_pdf(request.data['pdf'].file, pages='all')
     serializer = InvestigationSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
+
     # investigation_raw = Investigation(
     #     name=request.data['name'], network=request.data['network'])
     # investigation_raw.save()
 
-    investigation = GetInvestigationSub(serializer.data['id'])
-    if int(request.data['network']) == 0:
-        df = data_pipeline4(pdf)
-        for index, row in df.iterrows():
-            data_row = InvestigationData(
-                investigation=investigation,
-                caller=row["caller"],
-                receiver=row["receiver"], call_type=row["call_type"],
-                duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-                    row["date_time"], '%m/%d/%Y %H:%M:%S')
-            )
-            data_row.save()
-    elif int(request.data['network']) == 1:
-        df = data_pipeline2(pdf)
-        for index, row in df.iterrows():
-            data_row = InvestigationData(
-                investigation=investigation,
-                caller=row["caller"],
-                receiver=row["receiver"], call_type=row["call_type"],
-                duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-                    date_convert(row["date_time"]), '%m/%d/%Y %H:%M:%S')
-            )
-            data_row.save()
-    elif int(request.data['network']) == 2:
-        df = data_pipeline3(pdf)
-        for index, row in df.iterrows():
-            data_row = InvestigationData(
-                investigation=investigation,
-                caller=row["caller"],
-                receiver=row["receiver"], call_type=row["call_type"],
-                duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-                    row["date_time"], '%m/%d/%Y %H:%M:%S')
-            )
-            data_row.save()
-    elif int(request.data['network']) == 3:
-        df = data_pipeline(pdf)
-        for index, row in df.iterrows():
-            data_row = InvestigationData(
-                investigation=investigation,
-                caller=row["caller"],
-                receiver=row["receiver"], call_type=row["call_type"],
-                duration=0 if row["duration"] else row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
-                    row["date_time"], '%m/%d/%Y %H:%M:%S')
-            )
-            data_row.save()
+    # pdf = tab.read_pdf('testdocs/airtel.pdf', pages="all")
 
-    return Response(serializer.data)
+    try:
+        investigation = GetInvestigationSub(serializer.data['id'])
+        if int(request.data['network']) == 0:
+            tabular_pdf = tab.read_pdf(request.data['pdf'].file, pages='all')
+            df = mobitel_pipeline(tabular_pdf)
+            for index, row in df.iterrows():
+                data_row = InvestigationData(
+                    investigation=investigation,
+                    caller=row["caller"] if row["call_type"] == 0 else row["receiver"],
+                    receiver=row["caller"] if row["call_type"] == 1 else row["receiver"], call_type=row["call_type"],
+                    duration=0 if row["duration"] == 0 else row["duration"], imei=row["imei"], imsi=row["imsi"], created_at=datetime.strptime(
+                        row["date_time"], '%m/%d/%Y %H:%M:%S')
+                )
+                data_row.save()
+        elif int(request.data['network']) == 3:
+            print("Dialog")
+        elif int(request.data['network']) == 1:
+            df = airtel_pipeline(request.data['pdf'].file)
+            for index, row in df.iterrows():
+                data_row = InvestigationData(
+                    investigation=investigation,
+                    caller=row["caller"],
+                    receiver=row["receiver"], call_type=row["call_type"],
+                    duration=0 if row["duration"] == 0 else row["duration"], imei=row["imei"], imsi=row["imsi"], created_at=datetime.strptime(
+                        row["date_time"], '%m/%d/%Y %H:%M:%S')
+                )
+                data_row.save()
+        elif int(request.data['network']) == 2:
+            df = hutch_pipeline(request.data['pdf'].file)
+            for index, row in df.iterrows():
+                data_row = InvestigationData(
+                    investigation=investigation,
+                    caller=row["caller"],
+                    receiver=row["receiver"], call_type=row["call_type"],
+                    duration=0 if row["duration"] == 0 else row["duration"], imei=row["imei"], imsi=row["imsi"], created_at=datetime.strptime(
+                        row["date_time"], '%m/%d/%Y %H:%M:%S')
+                )
+                data_row.save()
+
+        return Response(serializer.data)
+    except:
+        DeleteInvestigationSub(serializer.data['id'])
+        return Response(
+            {"detail": "Unable to extract data."},
+            status=status.HTTP_422_UNPROCESSABLE_ENTITY
+        )
+
+    # elif int(request.data['network']) == 1:
+    #     df = data_pipeline2(pdf)
+    #     for index, row in df.iterrows():
+    #         data_row = InvestigationData(
+    #             investigation=investigation,
+    #             caller=row["caller"],
+    #             receiver=row["receiver"], call_type=row["call_type"],
+    #             duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
+    #                 date_convert(row["date_time"]), '%m/%d/%Y %H:%M:%S')
+    #         )
+    #         data_row.save()
+    # elif int(request.data['network']) == 2:
+    #     df = data_pipeline3(pdf)
+    #     for index, row in df.iterrows():
+    #         data_row = InvestigationData(
+    #             investigation=investigation,
+    #             caller=row["caller"],
+    #             receiver=row["receiver"], call_type=row["call_type"],
+    #             duration=row["duration"], imei=row["imei"], imsi=row["imei"], created_at=datetime.strptime(
+    #                 row["date_time"], '%m/%d/%Y %H:%M:%S')
+    #         )
+    #         data_row.save()
 
 
 @api_view(['GET'])
@@ -200,3 +228,9 @@ def GetInvestigationDataSubFunc_ob_date(call_type, investigation_id):
 def GetInvestigationSub(invID):
     investigation = Investigation.objects.get(id=invID)
     return investigation
+
+
+def DeleteInvestigationSub(invID):
+    investigation = Investigation.objects.get(id=invID)
+    investigation.delete()
+    return "Success"
