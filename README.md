@@ -7,7 +7,6 @@ Criminal Minds is an mobile application that helps local police to carry out inv
 <br/>
 
 #### Run App Locally
-
 <br/>
 
 ##### Make Migration
